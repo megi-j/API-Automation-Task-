@@ -1,7 +1,7 @@
 package ge.tbc.models;
 
 import java.util.List;
-
+//POJO კლასი არის მოდელი, რომელიც აღწერს API response-ს
 public class MoneyTransfers {
     private String mtSystem;
     private String name;

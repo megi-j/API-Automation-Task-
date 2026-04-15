@@ -7,29 +7,23 @@ import org.testng.annotations.Test;
 import java.util.List;
 
 public class Scenario1 extends BaseTest {
-//    MoneyTransfersSteps moneyTransfersSteps;
-//    MoneyTransfersApiSteps moneyTransfersApiSteps;
-
-
-//    public void setUp() {
-//         moneyTransfersSteps = new MoneyTransfersSteps(page);
-//        moneyTransfersApiSteps = new MoneyTransfersApiSteps();
-//    }
 
     @Test
     public void test(){
-
-
     MoneyTransfersApiSteps moneyTransfersApiSteps = new MoneyTransfersApiSteps();
     List<String> expectedApiNames = moneyTransfersApiSteps.getMoneyTransfersSystem()
             .assertField()
             .deserializeTransfersSystem()
             .getTransferSystemsNames();
 
+    List<List<String>> expectedApiCurrencies = moneyTransfersApiSteps
+            .getTransferSystemsCurrencies();
 
     MoneyTransfersSteps moneyTransfersSteps = new MoneyTransfersSteps(page);
-    moneyTransfersSteps.navigateToMoneyTransfersPage()
-            .getMoneyTransfersSystems()
-            .assertTransfersSystemsNamesMatch(expectedApiNames);
+        moneyTransfersSteps.navigateToMoneyTransfersPage()
+                .getMoneyTransfersSystemsNames()
+                .getMoneyTransfersSystemCurrencies()   // 🔥 დაამატე ეს
+                .assertTransfersSystemsNamesMatch(expectedApiNames)
+                .assertCurrenciesMatch(expectedApiCurrencies); // 🔥 და ეს
     }
 }

@@ -10,41 +10,44 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.hamcrest.Matchers.emptyOrNullString;
-import static org.hamcrest.Matchers.everyItem;
-import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.*;
 
 public class MoneyTransfersApiSteps {
     private Response response;
     private List<MoneyTransfers> moneyTransfers;
 
     public MoneyTransfersApiSteps getMoneyTransfersSystem(){
-        response = RestAssured.given()
+        response = RestAssured.given()     //request-ის შექმნა
                 .baseUri(Constants.BASE_URL)
-                .accept(ContentType.JSON)
+                .accept(ContentType.JSON)  //ვეუბნებით რომ json გვინდა
                 .when()
                 .get("/api/v1/moneyTransfer/systems?locale=ka-GE");
         return this;
     }
     public MoneyTransfersApiSteps deserializeTransfersSystem(){
-        this.moneyTransfers = Arrays.asList(response.as(MoneyTransfers[].class));
+        this.moneyTransfers = Arrays.asList(response.as(MoneyTransfers[].class)); //JSON->ჯავა object
         return this;
 
     }
     public List<String> getTransferSystemsNames(){
-        return moneyTransfers.stream()
+        return moneyTransfers.stream()//ყველა სისტემის name ამოაქვს
                 .map(MoneyTransfers::getName)
                 .collect(Collectors.toList());
 
+    }
+    public List<List<String>> getTransferSystemsCurrencies(){
+        return moneyTransfers.stream()
+                .map(MoneyTransfers::getCurrencies)
+                .collect(Collectors.toList());
     }
     public MoneyTransfersApiSteps assertField(){
         response.then()
                 .assertThat()
                 .statusCode(200)
-                .body("mtSystem", everyItem(not(emptyOrNullString())))
+                .body("mtSystem", everyItem(not(emptyOrNullString()))) //ყველა item-ში mtSystem არის შევსებული
                 .body("name", everyItem(not(emptyOrNullString())))
                 .body("imageUrl", everyItem(not(emptyOrNullString())))
-                .body("currencies", everyItem(not(emptyOrNullString())));
+                .body("currencies", everyItem(not(empty())));
         return this;
     }
 }
