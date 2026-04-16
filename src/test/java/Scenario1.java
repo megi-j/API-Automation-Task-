@@ -9,7 +9,7 @@ import java.util.List;
 public class Scenario1 extends BaseTest {
 
     @Test
-    public void test(){
+    public void monayTransfersTest(){
     MoneyTransfersApiSteps moneyTransfersApiSteps = new MoneyTransfersApiSteps();
     List<String> expectedApiNames = moneyTransfersApiSteps.getMoneyTransfersSystem()
             .assertField()
