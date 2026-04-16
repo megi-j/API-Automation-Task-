@@ -5,7 +5,7 @@ import com.microsoft.playwright.Page;
 import ge.tbc.data.Constants;
 
 public class MoneyTransfersSystemsPage {
-    private final Page page;
+    private final Page page;  // page არის playwright-ის კლასი ,ის წარმოადგენს ბრაუზერის ერთ კონკრეტულ ტაბს/გვერდს
     public final Locator moneyTransferCards;
     public final Locator currencies;
 

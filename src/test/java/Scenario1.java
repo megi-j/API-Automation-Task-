@@ -20,10 +20,10 @@ public class Scenario1 extends BaseTest {
             .getTransferSystemsCurrencies();
 
     MoneyTransfersSteps moneyTransfersSteps = new MoneyTransfersSteps(page);
-        moneyTransfersSteps.navigateToMoneyTransfersPage()
-                .getMoneyTransfersSystemsNames()
-                .getMoneyTransfersSystemCurrencies()   // 🔥 დაამატე ეს
-                .assertTransfersSystemsNamesMatch(expectedApiNames)
-                .assertCurrenciesMatch(expectedApiCurrencies); // 🔥 და ეს
+        moneyTransfersSteps.navigateToMoneyTransfersPage()    //გახსენი Money Transfers გვერდი
+                .getMoneyTransfersSystemsNames()                     //წაიკითხე სისტემების სახელები UI-დან
+                .getMoneyTransfersSystemCurrencies()          //წაიკითხე ვალუტები UI-დან
+                .assertTransfersSystemsNamesMatch(expectedApiNames)    //შეადარე UI სახელები API-ს
+                .assertCurrenciesMatch(expectedApiCurrencies);       //შეადარე UI ვალუტები API-ს
     }
 }

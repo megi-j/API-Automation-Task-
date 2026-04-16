@@ -13,8 +13,8 @@ import java.util.stream.Collectors;
 import static org.hamcrest.Matchers.*;
 
 public class MoneyTransfersApiSteps {
-    private Response response;
-    private List<MoneyTransfers> moneyTransfers;
+    private Response response; //ინახავს api response რომელიც rest Assured მა დააბრუნა
+    private List<MoneyTransfers> moneyTransfers; //ინახავს უკვე დესერიალიზებულ მონაცემებს
 
     public MoneyTransfersApiSteps getMoneyTransfersSystem(){
         response = RestAssured.given()     //request-ის შექმნა
@@ -25,14 +25,14 @@ public class MoneyTransfersApiSteps {
         return this;
     }
     public MoneyTransfersApiSteps deserializeTransfersSystem(){
-        this.moneyTransfers = Arrays.asList(response.as(MoneyTransfers[].class)); //JSON->ჯავა object
+        this.moneyTransfers = Arrays.asList(response.as(MoneyTransfers[].class)); //JSON გარდაიქმნება MoneyTransfers[], ამის შემდეგ ვმუშაობ ჯავა ობიექტებთან და არა json თან
         return this;
 
     }
     public List<String> getTransferSystemsNames(){
         return moneyTransfers.stream()//ყველა სისტემის name ამოაქვს
                 .map(MoneyTransfers::getName)
-                .collect(Collectors.toList());
+                .collect(Collectors.toList());     //გამოიყენება UI-სთან სახელების შესადარებლად
 
     }
     public List<List<String>> getTransferSystemsCurrencies(){

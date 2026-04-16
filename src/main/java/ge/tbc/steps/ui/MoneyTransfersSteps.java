@@ -31,7 +31,7 @@ public class MoneyTransfersSteps {
     }
     public MoneyTransfersSteps getMoneyTransfersSystemCurrencies(){
         uiTransfersSystemsCurrencies = moneyTransfersSystemsPage.moneyTransferCards
-                .locator("span.tbcx-pw-card__caption")
+                .locator(moneyTransfersSystemsPage.currencies)
                 .allInnerTexts()
                 .stream()
                 .map(text -> text
@@ -54,7 +54,6 @@ public class MoneyTransfersSteps {
     public MoneyTransfersSteps assertCurrenciesMatch(List<List<String>> apiCurrencies){
 
         for (int i = 0; i < uiTransfersSystemsCurrencies.size(); i++) {
-
             List<String> uiCurrencies = uiTransfersSystemsCurrencies.get(i)
                     .stream()
                     .map(String::toUpperCase)
