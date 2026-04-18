@@ -55,4 +55,15 @@ public class TreasuryRatesApiSteps {
                 .body("rates.forwardRates.period", everyItem(not(emptyOrNullString())));
         return this;
     }
+    public String getApiCurrencyPair() {
+        TreasuryRatesResponse responsePojo =
+                response.as(TreasuryRatesResponse.class);
+        TreasuryRateCurrency usdCurrency =
+                responsePojo.getRates().stream()
+                        .filter(r -> r.getIso().equals("USD"))
+                        .findFirst()
+                        .orElseThrow(() ->
+                                new AssertionError("USD currency not found in API response"));
+        return "USD/GEL";
+    }
 }

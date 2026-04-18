@@ -9,6 +9,7 @@ public class MoneyTransfersSystemsPage {
     public final Locator moneyTransferCards;
     public final Locator currencies;
 
+
     public MoneyTransfersSystemsPage(Page page){
         this.page = page;
         moneyTransferCards = page.locator("div.tbcx-pw-money-transfer-system-card"); //ყველა ბარათი
