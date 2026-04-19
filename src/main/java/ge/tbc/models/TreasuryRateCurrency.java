@@ -12,5 +12,4 @@ public class TreasuryRateCurrency {
     public List<ForwardRate> getForwardRates() {
         return forwardRates;
     }
-
 }

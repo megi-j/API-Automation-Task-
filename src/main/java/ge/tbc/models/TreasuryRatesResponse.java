@@ -1,7 +1,7 @@
 package ge.tbc.models;
 
 import java.util.List;
-
+//API response იერარქიულია, ამიტომ POJO კლასები დავყავი იმავე სტრუქტურის მიხედვით.
 public class TreasuryRatesResponse {
     private List<TreasuryRateCurrency> rates;
     private String updateDate;
@@ -10,4 +10,7 @@ public class TreasuryRatesResponse {
         return rates;
     }
 
+    public String getUpdateDate() {
+        return updateDate;
+    }
 }

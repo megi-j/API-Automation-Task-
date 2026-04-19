@@ -6,11 +6,9 @@ import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 
-import java.util.Arrays;
 import java.util.List;
 import ge.tbc.models.TreasuryRatesResponse;
 import ge.tbc.models.TreasuryRateCurrency;
-import ge.tbc.models.ForwardRate;
 import org.testng.Assert;
 
 import static org.hamcrest.Matchers.*;
@@ -27,16 +25,19 @@ public class TreasuryRatesApiSteps {
                 .get("/api/v1/forwardRates/getForwardRates?locale=ka-GE");
         return this;
     }
+
+    //ამ მეთოდში ორი მნიშვნელოვანი რამ ხდება: json გადაიქვა java pojo-ებად,ასევე ამოწმებს,
+    //რომ bid და ask forward rate‑ები ლოგიკურად სწორია და ნულზე მეტია
     public TreasuryRatesApiSteps deserializeTreasuryRates() {
-        TreasuryRatesResponse responsePojo =
+        treasuryRatesResponse  =
                 response.as(TreasuryRatesResponse.class);
 
         List<ForwardRate> usdRates =
-                responsePojo.getRates().stream()
-                        .filter(r -> r.getIso().equals("USD"))
-                        .findFirst()
-                        .orElseThrow()
-                        .getForwardRates();
+                treasuryRatesResponse.getRates().stream()//აბრუნებს ყველა ვალუტის list‑ს (USD,EUR,GBP..)და გადააქცევს list stream-ად რომ შევძლო filter
+                        .filter(r -> r.getIso().equals("USD")) //დამიტოვე მხოლოდ ის currency, რომლის: iso = "USD"
+                        .findFirst()//იღებს პირველ USD ობიექტს
+                        .orElseThrow() //თუ USD საერთოდ არ არსებობს:ტესტი მყისიერად ჩაიჭრება
+                        .getForwardRates();//USD currency‑დან იღებ: მის ყველა forward rate‑ს
 
         usdRates.forEach(rate -> {
             Assert.assertTrue(rate.getBidForwardRate() > 0,
@@ -46,6 +47,7 @@ public class TreasuryRatesApiSteps {
         });
         return this;
     }
+    //ეს მეთოდი ამოწმებს რომ აუცილებელი ველები არსებობს და ცარიელი არ არის
     public TreasuryRatesApiSteps assertField(){
         response.then()
                 .assertThat()
@@ -55,15 +57,30 @@ public class TreasuryRatesApiSteps {
                 .body("rates.forwardRates.period", everyItem(not(emptyOrNullString())));
         return this;
     }
+    //ჯერ ვფილტრავ rates კოლექციას USD ვალუტაზე (iso = "USD"), შემდეგ ამ ვალუტის forwardRates სიიდან ვიღებ პირველ forward rate‑ს, რადგან ყველა forward rate ერთსა და იმავე currency pair‑ს ეხება.
+    //ამ forward rate‑დან ვიღებ iso1 და iso2 მნიშვნელობებს და ვაწყობ currency pair‑ს USD/GEL ფორმატში, რომელსაც შემდეგ UI‑ზე გამოტანილ სათაურს ვადარებ.
     public String getApiCurrencyPair() {
-        TreasuryRatesResponse responsePojo =
-                response.as(TreasuryRatesResponse.class);
-        TreasuryRateCurrency usdCurrency =
-                responsePojo.getRates().stream()
+        ForwardRate firstUsdRate =
+                treasuryRatesResponse.getRates().stream()
                         .filter(r -> r.getIso().equals("USD"))
                         .findFirst()
                         .orElseThrow(() ->
-                                new AssertionError("USD currency not found in API response"));
-        return "USD/GEL";
+                                new AssertionError("USD currency not found"))
+                        .getForwardRates()
+                        .stream()
+                        .findFirst()
+                        .orElseThrow(() ->
+                                new AssertionError("No forward rates for USD"));
+
+        return firstUsdRate.getIso1() + "/" + firstUsdRate.getIso2();
+    }
+    //ეს მეთოდი არსებობს იმისთვის, რომ API‑დან მიღებული USD forward rate‑ები გადავცეთ UI comparison‑ს
+    public List<ForwardRate> getUsdRates() {
+        return treasuryRatesResponse.getRates().stream()
+                .filter(r -> r.getIso().equals("USD"))
+                .findFirst()
+                .orElseThrow(() ->
+                        new AssertionError("USD rates not found in API response"))
+                .getForwardRates();
     }
 }
